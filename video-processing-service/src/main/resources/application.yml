@@ -1,0 +1,88 @@
+spring:
+  application:
+    name: video-processing-service
+  
+  # 데이터베이스 설정
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+    # 운영환경에서는 PostgreSQL 사용
+    # url: jdbc:postgresql://localhost:5432/video_analysis
+    # driver-class-name: org.postgresql.Driver
+    # username: ${DB_USERNAME:postgres}
+    # password: ${DB_PASSWORD:password}
+  
+  # JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        # 운영환경: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  # H2 콘솔 (개발용)
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+# 애플리케이션 설정
+app:
+  # YouTube API 설정
+  youtube:
+    api-key: ${YOUTUBE_API_KEY:your-youtube-api-key}
+    region-code: KR
+    max-results: 50  # API 호출당 최대 결과 수
+    
+  # 비디오 처리 설정
+  video:
+    target-daily-count: 1000  # 일일 처리 목표 영상 수
+    max-duration-seconds: 120  # 최대 영상 길이 (2분)
+    download-quality: 240p     # 다운로드 화질 (대역폭 최소화)
+    
+    # pHash 생성 설정
+    phash:
+      segments: 30              # 영상 분할 세그먼트 수
+      frames-per-second: 10     # 초당 프레임 추출 수 (기존 6에서 10으로 상향)
+      
+  # 큐 시스템 설정
+  queue:
+    video-processing:
+      capacity: 5000           # 영상 처리 큐 용량
+    audio-processing:
+      capacity: 5000           # 오디오 처리 큐 용량
+    # 향후 Redis/MQ 전환을 위한 설정
+    # type: in-memory         # in-memory, redis, rabbitmq 등
+    # redis:
+    #   host: localhost
+    #   port: 6379
+
+# 스케줄링 설정
+scheduling:
+  enabled: true
+  daily-collection:
+    cron: "0 0 0 * * *"        # 매일 자정 실행
+
+# 로깅 설정
+logging:
+  level:
+    com.analysis: DEBUG
+    org.springframework.web: INFO
+    org.hibernate: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# 액추에이터 설정
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always

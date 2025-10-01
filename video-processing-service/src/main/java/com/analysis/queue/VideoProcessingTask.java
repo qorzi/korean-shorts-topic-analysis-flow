@@ -1,4 +1,4 @@
-package com.analysis.infrastructure.queue;
+package com.analysis.queue;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,11 +53,6 @@ public class VideoProcessingTask {
     private LocalDateTime createdAt;
     
     /**
-     * 작업 우선순위 (낮을수록 높은 우선순위)
-     */
-    private Integer priority;
-    
-    /**
      * 재시도 횟수
      */
     private Integer retryCount;
@@ -108,25 +103,6 @@ public class VideoProcessingTask {
                 .videoUrl(videoUrl)
                 .durationSeconds(durationSeconds)
                 .createdAt(LocalDateTime.now())
-                .priority(1)
-                .retryCount(0)
-                .build();
-    }
-    
-    /**
-     * 높은 우선순위 작업 생성
-     */
-    public static VideoProcessingTask createHighPriority(Long videoId, String youtubeId, 
-                                                       String title, String videoUrl, 
-                                                       Integer durationSeconds) {
-        return VideoProcessingTask.builder()
-                .videoId(videoId)
-                .youtubeId(youtubeId)
-                .title(title)
-                .videoUrl(videoUrl)
-                .durationSeconds(durationSeconds)
-                .createdAt(LocalDateTime.now())
-                .priority(0)
                 .retryCount(0)
                 .build();
     }

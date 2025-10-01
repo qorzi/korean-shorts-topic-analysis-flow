@@ -1,6 +1,6 @@
-package com.analysis.infrastructure.youtube;
+package com.analysis.external;
 
-import com.analysis.domain.model.Video;
+import com.analysis.entity.Video;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.youtube.YouTube;
@@ -21,7 +21,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
- * YouTube Data API를 사용하여 한국 쇼츠 영상 데이터를 수집하는 서비스
+ * YouTube Data API를 사용하여 한국 쇼츠 영상 데이터를 수집하는 클라이언트
  * 
  * 수집 조건:
  * - 지역: 대한민국 (regionCode: KR)
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class YouTubeApiService {
+public class YouTubeApiClient {
     
     private final YouTube youTube;
     private final String apiKey;
@@ -40,7 +40,7 @@ public class YouTubeApiService {
     private final Integer targetDailyCount;
     private final Random random = new Random();
     
-    public YouTubeApiService(
+    public YouTubeApiClient(
             @Value("${app.youtube.api-key}") String apiKey,
             @Value("${app.youtube.region-code:KR}") String regionCode,
             @Value("${app.youtube.max-results:50}") Long maxResults,
@@ -58,7 +58,7 @@ public class YouTubeApiService {
                 .setApplicationName("korean-shorts-analysis")
                 .build();
         
-        log.info("YouTube API 서비스 초기화 완료 - 지역: {}, 일일 목표: {}개", regionCode, targetDailyCount);
+        log.info("YouTube API 클라이언트 초기화 완료 - 지역: {}, 일일 목표: {}개", regionCode, targetDailyCount);
     }
     
     /**

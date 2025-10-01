@@ -1,4 +1,4 @@
-package com.analysis.domain.model;
+package com.analysis.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * YouTube 쇼츠 영상 정보를 저장하는 도메인 엔티티
+ * YouTube 쇼츠 영상 정보를 저장하는 엔티티
  * 
  * 필터링 조건:
  * - 영상 길이: 2분 이하 (120초)

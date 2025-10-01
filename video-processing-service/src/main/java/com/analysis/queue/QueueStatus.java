@@ -1,4 +1,4 @@
-package com.analysis.infrastructure.queue;
+package com.analysis.queue;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

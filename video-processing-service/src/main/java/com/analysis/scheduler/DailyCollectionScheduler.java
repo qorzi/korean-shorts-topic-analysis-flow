@@ -1,6 +1,6 @@
-package com.analysis.application.scheduler;
+package com.analysis.scheduler;
 
-import com.analysis.application.service.VideoCollectionService;
+import com.analysis.service.VideoCollectionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

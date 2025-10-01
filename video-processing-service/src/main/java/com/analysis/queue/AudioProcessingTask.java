@@ -1,4 +1,4 @@
-package com.analysis.infrastructure.queue;
+package com.analysis.queue;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,11 +51,6 @@ public class AudioProcessingTask {
      * 작업 생성 시간
      */
     private LocalDateTime createdAt;
-    
-    /**
-     * 작업 우선순위 (낮을수록 높은 우선순위)
-     */
-    private Integer priority;
     
     /**
      * 재시도 횟수
@@ -123,7 +118,6 @@ public class AudioProcessingTask {
                 .durationSeconds(durationSeconds)
                 .processingType(processingType)
                 .createdAt(LocalDateTime.now())
-                .priority(1)
                 .retryCount(0)
                 .build();
     }

@@ -1,4 +1,4 @@
-package com.analysis.application.service;
+package com.analysis.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bytedeco.opencv.opencv_core.Mat;

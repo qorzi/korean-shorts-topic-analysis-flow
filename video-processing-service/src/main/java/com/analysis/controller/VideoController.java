@@ -1,9 +1,9 @@
-package com.analysis.presentation.controller;
+package com.analysis.controller;
 
-import com.analysis.application.service.VideoCollectionService;
-import com.analysis.domain.model.Video;
-import com.analysis.infrastructure.persistence.VideoRepository;
-import com.analysis.infrastructure.queue.QueueManager;
+import com.analysis.service.VideoCollectionService;
+import com.analysis.entity.Video;
+import com.analysis.repository.VideoRepository;
+import com.analysis.queue.QueueManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -53,9 +53,14 @@ public class VideoController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("collectedAt").descending());
         
         Page<Video> videos;
-        if (status != null) {
-            Video.ProcessingStatus processingStatus = Video.ProcessingStatus.valueOf(status.toUpperCase());
-            videos = videoRepository.findAll(pageable); // 실제로는 status 필터링 필요
+        if (status != null && !status.trim().isEmpty()) {
+            try {
+                Video.ProcessingStatus processingStatus = Video.ProcessingStatus.valueOf(status.toUpperCase());
+                videos = videoRepository.findByProcessingStatus(processingStatus, pageable);
+            } catch (IllegalArgumentException e) {
+                // 잘못된 status 값인 경우 전체 조회
+                videos = videoRepository.findAll(pageable);
+            }
         } else {
             videos = videoRepository.findAll(pageable);
         }

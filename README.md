@@ -11,28 +11,31 @@
 ## 🏗️ 프로젝트 구조
 
 ### 1. video-processing-service (스프링부트 프로젝트)
-YouTube 쇼츠 영상 수집 및 처리를 담당하는 핵심 서비스
+YouTube 쇼츠 영상 수집 및 처리를 담당하는 핵심 서비스 (MVC 아키텍처)
 
 ```
 video-processing-service/
 ├── src/main/java/com/analysis/
-│   ├── VideoProcessingServiceApplication.java
-│   ├── application/
-│   │   ├── scheduler/DailyCollectionScheduler.java
-│   │   └── service/
-│   │       ├── VideoCollectionService.java
-│   │       ├── VideoProcessingService.java
-│   │       └── PHashGenerator.java
-│   ├── domain/model/Video.java
-│   ├── infrastructure/
-│   │   ├── persistence/VideoRepository.java
-│   │   ├── queue/
-│   │   │   ├── QueueManager.java
-│   │   │   ├── VideoProcessingTask.java
-│   │   │   ├── AudioProcessingTask.java
-│   │   │   └── QueueStatus.java
-│   │   └── youtube/YouTubeApiService.java
-│   └── presentation/controller/VideoController.java
+│   ├── VideoProcessingServiceApplication.java  # 메인 애플리케이션
+│   ├── controller/                             # REST API 컨트롤러
+│   │   └── VideoController.java
+│   ├── service/                                # 비즈니스 서비스
+│   │   ├── VideoCollectionService.java
+│   │   ├── VideoProcessingService.java
+│   │   └── PHashGenerator.java
+│   ├── scheduler/                              # 스케줄링
+│   │   └── DailyCollectionScheduler.java
+│   ├── repository/                             # 데이터 접근 계층
+│   │   └── VideoRepository.java
+│   ├── entity/                                 # JPA 엔티티
+│   │   └── Video.java
+│   ├── external/                               # 외부 API 클라이언트
+│   │   └── YouTubeApiClient.java
+│   └── queue/                                  # 큐 관리 시스템
+│       ├── QueueManager.java
+│       ├── VideoProcessingTask.java
+│       ├── AudioProcessingTask.java
+│       └── QueueStatus.java
 └── src/main/resources/
     └── application.yml
 ```
@@ -89,6 +92,36 @@ int hammingDistance = Long.bitCount(hash1 ^ hash2);
 ### Queue System
 - **In-Memory Queue** (현재)
 - **Redis/RabbitMQ** (향후 확장)
+
+### Architecture
+- **MVC 패턴** (Model-View-Controller)
+- **Spring Boot 기반** 레이어드 아키텍처
+- **확장 가능한** 큐 시스템 설계
+
+## 🏛️ 아키텍처 설계
+
+### MVC 패턴 적용
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Controller    │───▶│    Service      │───▶│   Repository    │
+│  (REST API)     │    │ (Business Logic)│    │  (Data Access)  │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   HTTP 요청/응답  │    │  큐 관리 시스템    │    │   데이터베이스     │
+│   JSON 변환      │    │  외부 API 연동    │    │   JPA 엔티티     │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+### 레이어별 역할
+- **Controller**: HTTP 요청 처리, 응답 변환
+- **Service**: 비즈니스 로직, 트랜잭션 관리
+- **Repository**: 데이터 접근, JPA 쿼리
+- **Entity**: 도메인 모델, 데이터 구조
+- **External**: 외부 API 연동 (YouTube API)
+- **Queue**: 비동기 작업 관리
+- **Scheduler**: 정기 작업 실행
 
 ## 🚀 설치 및 실행
 
@@ -169,6 +202,12 @@ GET /actuator/health
 - **백프레셔**: 큐 용량 초과 시 자동 대기
 - **재시도 메커니즘**: 실패한 작업 자동 재시도
 - **모니터링**: 큐 상태 실시간 추적
+
+### 4. MVC 아키텍처 최적화
+- **레이어 분리**: 명확한 책임 분리로 유지보수성 향상
+- **의존성 주입**: Spring IoC 컨테이너 활용
+- **트랜잭션 관리**: @Transactional을 통한 데이터 일관성
+- **예외 처리**: 계층별 적절한 예외 처리
 
 ## 📈 확장 계획
 

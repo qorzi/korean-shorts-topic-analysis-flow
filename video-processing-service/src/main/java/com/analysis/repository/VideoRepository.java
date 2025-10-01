@@ -1,6 +1,8 @@
-package com.analysis.infrastructure.persistence;
+package com.analysis.repository;
 
-import com.analysis.domain.model.Video;
+import com.analysis.entity.Video;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,6 +27,11 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
      * 처리 상태별 영상 조회
      */
     List<Video> findByProcessingStatus(Video.ProcessingStatus status);
+
+    /**
+     * 처리 상태별 영상 조회 (페이징)
+     */
+    Page<Video> findByProcessingStatus(Video.ProcessingStatus status, Pageable pageable);
     
     /**
      * 처리 대기 중인 영상 조회 (생성 시간 순)

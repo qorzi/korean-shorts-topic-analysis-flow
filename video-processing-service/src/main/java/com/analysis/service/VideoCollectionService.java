@@ -1,10 +1,10 @@
-package com.analysis.application.service;
+package com.analysis.service;
 
-import com.analysis.domain.model.Video;
-import com.analysis.infrastructure.persistence.VideoRepository;
-import com.analysis.infrastructure.queue.QueueManager;
-import com.analysis.infrastructure.queue.VideoProcessingTask;
-import com.analysis.infrastructure.youtube.YouTubeApiService;
+import com.analysis.entity.Video;
+import com.analysis.repository.VideoRepository;
+import com.analysis.queue.QueueManager;
+import com.analysis.queue.VideoProcessingTask;
+import com.analysis.external.YouTubeApiClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ import java.util.List;
 @Slf4j
 public class VideoCollectionService {
     
-    private final YouTubeApiService youTubeApiService;
+    private final YouTubeApiClient youTubeApiClient;
     private final VideoRepository videoRepository;
     private final QueueManager queueManager;
     
@@ -43,7 +43,7 @@ public class VideoCollectionService {
         
         try {
             // 1. YouTube에서 영상 수집
-            List<Video> videos = youTubeApiService.collectDailyShorts(targetDate);
+            List<Video> videos = youTubeApiClient.collectDailyShorts(targetDate);
             
             if (videos.isEmpty()) {
                 log.warn("수집된 영상이 없습니다.");
@@ -210,7 +210,7 @@ public class VideoCollectionService {
                 return false;
             }
             
-            VideoProcessingTask task = VideoProcessingTask.createHighPriority(
+            VideoProcessingTask task = VideoProcessingTask.create(
                     video.getId(),
                     video.getYoutubeId(),
                     video.getTitle(),
